@@ -26,6 +26,7 @@ abstract class BaseTask implements Task
     public function ignoreErrors()
     {
         $this->ignore = true;
+        return $this;
     }
 
     /**
