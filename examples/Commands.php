@@ -19,7 +19,9 @@ class Commands extends \CTask\BaseCommands
 
         $this->say($answer);
 
-        $this->copyDir(array('a' => 'b'))->execute();
+        $this->copyDir(array('a' => 'b'))->run();
+
+        $this->write('test.txt')->line('hello')->run();
 
         return 0;
     }

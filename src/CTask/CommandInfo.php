@@ -1,23 +1,52 @@
 <?php
 
+
+/**
+The MIT License (MIT)
+
+Copyright (c) 2014 Codegyre developers team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 namespace CTask;
 
 class CommandInfo
 {
     const PARAM_IS_REQUIRED = '__param_is_required__';
+
     protected static $annotationRegex = '/@%s(?:[ \t]+(.*?))?[ \t]*\r?$/m';
+
     /**
      * @var \ReflectionMethod
      */
     protected $reflection;
+
     /**
      * @var array
      */
     protected $parsedDocBlock;
+
     public function __construct($className, $methodName)
     {
         $this->reflection = new \ReflectionMethod($className, $methodName);
     }
+
     public function getDescription()
     {
         $desc = $this->getAnnotation('description');
@@ -30,6 +59,7 @@ class CommandInfo
         }
         return $desc;
     }
+
     public function getName()
     {
         $name = $this->getAnnotation('name');
@@ -39,6 +69,7 @@ class CommandInfo
         $name = $this->convertName($name);
         return $name;
     }
+
     public function getArguments()
     {
         $args = array();
@@ -65,6 +96,7 @@ class CommandInfo
         }
         return $args;
     }
+
     public function getOptions()
     {
         $params = $this->reflection->getParameters();
@@ -74,11 +106,13 @@ class CommandInfo
         if (!$this->isAssoc($param->getDefaultValue())) return array();
         return $param->getDefaultValue();
     }
+
     public function getHelp()
     {
         $parsed = $this->parseDocBlock();
         return $parsed['help'];
     }
+
     public function getArgumentDescription($name)
     {
         $parsed = $this->parseDocBlock();
@@ -87,6 +121,7 @@ class CommandInfo
         }
         return '';
     }
+
     public function getOptionDescription($name)
     {
         $parsed = $this->parseDocBlock();
@@ -95,11 +130,13 @@ class CommandInfo
         }
         return '';
     }
+
     protected function isAssoc($arr)
     {
         if (!is_array($arr)) return false;
         return array_keys($arr) !== range(0, count($arr) - 1);
     }
+
     protected function getAnnotation($annotation)
     {
         $docBlock = $this->reflection->getDocComment();
@@ -108,6 +145,7 @@ class CommandInfo
         if (!$res) return null;
         return $matched[1];
     }
+
     private function convertName($camel)
     {
         $splitter="-";
@@ -115,6 +153,7 @@ class CommandInfo
         $camel = preg_replace("/$splitter/", ':', $camel, 1);
         return strtolower($camel);
     }
+
     private function parseDocBlock()
     {
         if (!$this->parsedDocBlock) {
@@ -187,6 +226,7 @@ class CommandInfo
         }
         return $this->parsedDocBlock;
     }
+
     private function combineParsedComment(array $doc, $keepFormatting = false)
     {
         if ($keepFormatting) {

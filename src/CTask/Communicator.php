@@ -1,6 +1,7 @@
 <?php
 
 namespace CTask;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Essentially the IO trait of Robo.
@@ -60,6 +61,12 @@ interface Communicator
      * @return mixed
      */
     public function confirm($question);
+
+    /**
+     * Return the raw output interface.
+     * @return OutputInterface
+     */
+    public function getOutput();
 }
 
 ?>

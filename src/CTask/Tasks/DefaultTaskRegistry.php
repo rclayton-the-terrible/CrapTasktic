@@ -15,11 +15,31 @@ use CTask\TaskRegistry;
 class DefaultTaskRegistry implements TaskRegistry
 {
     public static $tasks = array(
-        'CTask\Tasks\FileSystem\CopyDir'
+        'CTask\Tasks\Base\Exec',
+        'CTask\Tasks\Base\ParallelExec',
+        'CTask\Tasks\Base\Stack',
+        'CTask\Tasks\Base\Watch',
+        'CTask\Tasks\FileSystem\CopyDir',
+        'CTask\Tasks\FileSystem\CleanDir',
+        'CTask\Tasks\FileSystem\DeleteDir',
+        'CTask\Tasks\FileSystem\MirrorDir',
+        'CTask\Tasks\File\Concat',
+        'CTask\Tasks\File\Replace',
+        'CTask\Tasks\File\Write',
     );
 
     public static $keyToTaskMapping = array(
-        'copyDir' => 'CTask\Tasks\FileSystem\CopyDir'
+        'exec' => 'CTask\Tasks\Base\Exec',
+        'pexec' => 'CTask\Tasks\Base\ParallelExec',
+        'stack' => 'CTask\Tasks\Base\Stack',
+        'watch' => 'CTask\Tasks\Base\Watch',
+        'copyDir' => 'CTask\Tasks\FileSystem\CopyDir',
+        'cleanDir' => 'CTask\Tasks\FileSystem\CleanDir',
+        'deleteDir' => 'CTask\Tasks\FileSystem\DeleteDir',
+        'mirrorDir' => 'CTask\Tasks\FileSystem\MirrorDir',
+        'concat' => 'CTask\Tasks\File\Concat',
+        'replace' => 'CTask\Tasks\File\Replace',
+        'write' => 'CTask\Tasks\File\Write',
     );
 
     /**

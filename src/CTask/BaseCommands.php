@@ -32,7 +32,7 @@ class BaseCommands
      * Output an un-formatted message.
      * @param $message
      */
-    protected function write($message)
+    protected function writeln($message)
     {
         $this->communicator->write($message);
     }

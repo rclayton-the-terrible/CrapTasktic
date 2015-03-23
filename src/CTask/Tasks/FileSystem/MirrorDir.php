@@ -1,5 +1,6 @@
 <?php
 
+
 /**
 The MIT License (MIT)
 
@@ -25,19 +26,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace CTask\Tasks\FileSystem;
 
-use CTask\Tasks\BaseTask;
-use Symfony\Component\Filesystem\Filesystem as sfFileSystem;
+use CTask\Result;
 
-abstract class BaseDir extends BaseTask
+class MirrorDir extends BaseDir
 {
-    protected $dirs = array();
-    protected $fs;
-
-    public function __construct($dirs)
+    public function run()
     {
-        is_array($dirs)
-            ? $this->dirs = $dirs
-            : $this->dirs[] = $dirs;
-        $this->fs = new sfFileSystem();
+        foreach ($this->dirs as $src => $dst) {
+            $this->fs->mirror(
+                $src, $dst, null, array(
+                    'override' => true,
+                    'copy_on_windows' => true,
+                    'delete' => true
+                )
+            );
+            $this->printTaskInfo("Mirrored from <info>$src</info> to <info>$dst</info>");
+        }
+        return Result::success($this);
     }
 }
+
+?>

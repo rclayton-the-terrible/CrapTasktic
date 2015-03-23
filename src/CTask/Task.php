@@ -22,7 +22,7 @@ interface Task
      * if it is not, you are a very bad person.
      * @return Result
      */
-    public function execute();
+    public function run();
 }
 
 ?>

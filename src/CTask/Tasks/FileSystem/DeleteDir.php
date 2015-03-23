@@ -1,5 +1,6 @@
 <?php
 
+
 /**
 The MIT License (MIT)
 
@@ -25,19 +26,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace CTask\Tasks\FileSystem;
 
-use CTask\Tasks\BaseTask;
-use Symfony\Component\Filesystem\Filesystem as sfFileSystem;
+use CTask\Result;
 
-abstract class BaseDir extends BaseTask
+class DeleteDir extends BaseDir
 {
-    protected $dirs = array();
-    protected $fs;
-
-    public function __construct($dirs)
+    /**
+     * Execute the task and return the result.  The result must be of type CTask\Result;
+     * if it is not, you are a very bad person.
+     * @return Result
+     */
+    public function run()
     {
-        is_array($dirs)
-            ? $this->dirs = $dirs
-            : $this->dirs[] = $dirs;
-        $this->fs = new sfFileSystem();
+        foreach ($this->dirs as $dir) {
+            $this->fs->remove($dir);
+            $this->printTaskInfo("deleted <info>$dir</info>...");
+        }
+        return Result::success($this);
     }
 }
+
+?>
