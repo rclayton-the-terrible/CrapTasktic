@@ -22,10 +22,12 @@ class DefaultTaskRegistry implements TaskRegistry
         'CTask\Tasks\FileSystem\CopyDir',
         'CTask\Tasks\FileSystem\CleanDir',
         'CTask\Tasks\FileSystem\DeleteDir',
+        'CTask\Tasks\FileSystem\MakeDir',
         'CTask\Tasks\FileSystem\MirrorDir',
         'CTask\Tasks\File\Concat',
         'CTask\Tasks\File\Replace',
         'CTask\Tasks\File\Write',
+        'CTask\Tasks\File\Delete',
     );
 
     public static $keyToTaskMapping = array(
@@ -37,9 +39,11 @@ class DefaultTaskRegistry implements TaskRegistry
         'cleanDir' => 'CTask\Tasks\FileSystem\CleanDir',
         'deleteDir' => 'CTask\Tasks\FileSystem\DeleteDir',
         'mirrorDir' => 'CTask\Tasks\FileSystem\MirrorDir',
+        'mkdir' => 'CTask\Tasks\FileSystem\MakeDir',
         'concat' => 'CTask\Tasks\File\Concat',
         'replace' => 'CTask\Tasks\File\Replace',
         'write' => 'CTask\Tasks\File\Write',
+        'rm' => 'CTask\Tasks\File\Delete',
     );
 
     /**

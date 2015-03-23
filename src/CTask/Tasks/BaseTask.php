@@ -21,6 +21,13 @@ abstract class BaseTask implements Task
     protected $startedAt;
     protected $finishedAt;
 
+    protected $ignore = false;
+
+    public function ignoreErrors()
+    {
+        $this->ignore = true;
+    }
+
     /**
      * Initialize the task with the essential services for performing tasks.
      * @param Configuration $configuration configuration for the application instance.
