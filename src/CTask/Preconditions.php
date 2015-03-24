@@ -28,6 +28,11 @@ class Preconditions
     {
         if (!$result) throw new IllegalStateException($message);
     }
+
+    public static function assertNotNull($argument, $message = 'Argument must not be null.')
+    {
+        if ($argument == null)  throw new IllegalStateException($message);
+    }
 }
 
 ?>

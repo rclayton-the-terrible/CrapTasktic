@@ -229,9 +229,10 @@ class Tasks
      * @param array $arguments Actual argument signature of the constructor.
      * @return Task an implementation of Task corresponding to the key.
      */
-    function createInstance($key, array $arguments = null)
+    function createInstance($key, array $arguments = array())
     {
         Preconditions::assertArrayContainsKey($this->mapping, $key);
+        Preconditions::assertNotNull($arguments);
 
         $instance = null;
         $classOrInstanceOrFn = $this->mapping[$key];
