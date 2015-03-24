@@ -50,12 +50,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Runner
 {
-    private static $INVALID_METHOD_NAMES = array('setCommunicator', 'setTaskRegistry', 'setConfiguration', 'getAppInfo');
-
-    /**
-     * @var TaskRegistry
-     */
-    private $taskRegistry;
+    private static $INVALID_METHOD_NAMES = array('setCommunicator', 'setConfiguration', 'getAppInfo');
 
     /**
      * @var Communicator
@@ -70,22 +65,58 @@ class Runner
     protected $currentDir = '.';
     protected $passThroughArgs = null;
 
-    public function __construct(Configuration $configuration = null, Communicator $communicator = null, TaskRegistry $taskRegistry = null)
+    public function __construct(Configuration $configuration = null, Communicator $communicator = null)
     {
         $this->configuration = ($configuration)? $configuration : new EnvConfiguration();
         $this->communicator = ($communicator)? $communicator : DefaultCommunicator::getInstance();
-        $this->taskRegistry = ($taskRegistry)? $taskRegistry : new DefaultTaskRegistry();
     }
 
-    public function run($input = null, $commandsClass = 'Commands', $commandsFile = null)
+    //public function run($input = null, $commandsClass = 'Commands', $commandsFile = null)
+    public function run(array $conf, $input = null)
     {
+        $commandsRefClass = null;
+        $instance = null;
+
+        // An instance of the commands object was passed in.
+        if (array_key_exists('instance', $conf))
+        {
+            $instance = $conf['instance'];
+
+            $commandsRefClass = new ReflectionClass($instance);
+
+            Preconditions::assert($commandsRefClass->isSubclassOf('CTask\BaseCommands'));
+        }
+        // The commands class and file is external to the project an needs to be dynamically loaded.
+        else if (array_key_exists('class', $conf) && array_key_exists('file', $conf))
+        {
+            $class = $conf['class'];
+
+            $file = $conf['file'];
+
+            $this->requireCommands($class, $file);
+
+            $commandsRefClass = new ReflectionClass($class);
+
+            $instance = $this->createCommandsInstance($commandsRefClass);
+        }
+        // Class may have been autoloaded (which is fine), we just need to make sure
+        // it's specified in the bag.
+        else
+        {
+            Preconditions::assertArrayContainsKey($conf, 'class');
+
+            $commandsRefClass = new ReflectionClass($conf['class']);
+
+            $instance = $this->createCommandsInstance($commandsRefClass);
+        }
+
         register_shutdown_function(array($this, 'shutdown'));
 
         $input = $this->prepareInput($input ? $input : $_SERVER['argv']);
 
-        $this->requireCommands($commandsClass, $commandsFile);
+        $this->initializeCommandsInstance($instance);
 
-        $app = $this->createApplication($commandsClass);
+        $app = $this->createApplication($commandsRefClass, $instance);
 
         $app->run($input);
     }
@@ -119,24 +150,23 @@ class Runner
     }
 
     /**
-     * Initialize an instance of the commands class.
-     * @param $class ReflectionClass Instance of the Reflection class.
+     * @param ReflectionClass $class
      * @return BaseCommands
      */
-    protected function initializeCommandsClass(ReflectionClass $class)
+    protected function createCommandsInstance(ReflectionClass $class)
     {
         Preconditions::assert($class->isSubclassOf('CTask\BaseCommands'));
 
-        /**
-         * @var $commands BaseCommands
-         */
-        $commands = $class->newInstance();
+        return $class->newInstance();
+    }
 
-        $commands->setCommunicator($this->communicator);
-        $commands->setConfiguration($this->configuration);
-        $commands->setTaskRegistry($this->taskRegistry);
-
-        return $commands;
+    /**
+     * Initialize the Commands object
+     * @param $commands BaseCommands instance.
+     */
+    protected function initializeCommandsInstance(BaseCommands $commands)
+    {
+        $commands->init($this->configuration, $this->communicator);
     }
 
     /**
@@ -159,22 +189,18 @@ class Runner
         return $commands;
     }
 
-    public function createApplication($className)
+    public function createApplication(ReflectionClass $commandRefClass, BaseCommands $commands)
     {
-        $class = new \ReflectionClass($className);
-
-        $commands = $this->initializeCommandsClass($class);
-
         list($name, $version) = $commands->getAppInfo();
 
         $app = new Application($name, $version);
 
-        $commandNames = $this->getCommandMethodNames($class);
+        $commandNames = $this->getCommandMethodNames($commandRefClass);
 
         $passThrough = $this->passThroughArgs;
 
         foreach ($commandNames as $commandName) {
-            $command = $this->createCommand(new CommandInfo($className, $commandName));
+            $command = $this->createCommand(new CommandInfo($commandRefClass->getName(), $commandName));
             $command->setCode(function(InputInterface $input) use ($commands, $commandName, $passThrough) {
                 // get passthru args
                 $args = $input->getArguments();

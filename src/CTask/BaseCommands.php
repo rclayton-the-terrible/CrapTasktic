@@ -2,6 +2,8 @@
 
 namespace CTask;
 
+use CTask\Tasks\Tasks;
+
 /**
  * You need to extend this dude if with your "Commands" class, where each
  * method is a "Command" that can be executed.
@@ -14,11 +16,6 @@ class BaseCommands
     const CT_VERSION = "0.0.1";
 
     /**
-     * @var TaskRegistry
-     */
-    private $taskRegistry;
-
-    /**
      * @var Communicator
      */
     private $communicator;
@@ -27,6 +24,11 @@ class BaseCommands
      * @var Configuration
      */
     private $configuration;
+
+    /**
+     * @var Tasks
+     */
+    protected $task;
 
     /**
      * Output an un-formatted message.
@@ -98,30 +100,6 @@ class BaseCommands
     }
 
     /**
-     * @param TaskRegistry $taskRegistry
-     */
-    function setTaskRegistry($taskRegistry)
-    {
-        $this->taskRegistry = $taskRegistry;
-    }
-
-    /**
-     * @param Communicator $communicator
-     */
-    function setCommunicator($communicator)
-    {
-        $this->communicator = $communicator;
-    }
-
-    /**
-     * @param Configuration $configuration
-     */
-    function setConfiguration($configuration)
-    {
-        $this->configuration = $configuration;
-    }
-
-    /**
      * Get the application name and version.  Override this
      * to get a custom name and version.
      * @return array [name, version]
@@ -132,22 +110,14 @@ class BaseCommands
     }
 
     /**
-     * Magic!  Always returns an instance of task or breaks the whole damn application.
-     * @param $name
-     * @param $arguments
-     * @return Task
+     *
+     * @param Configuration $configuration
+     * @param Communicator $communicator
      */
-    function __call($name, $arguments)
+    function init(Configuration $configuration, Communicator $communicator)
     {
-        /**
-         * @var $task Task
-         */
-        $task = $this->taskRegistry->newTaskInstance($name, $arguments);
-
-        $task->init($this->configuration, $this->communicator);
-
-        return $task;
+        $this->configuration = $configuration;
+        $this->communicator = $communicator;
+        $this->task = new Tasks($this->configuration, $this->communicator);
     }
-
-
 }

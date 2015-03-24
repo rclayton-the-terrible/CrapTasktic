@@ -14,6 +14,11 @@ class Stack extends BaseTask
     private $stopOnFail = true;
     private $tasks;
 
+    public function __construct(array $tasks = null)
+    {
+        $this->tasks = $tasks;
+    }
+
     public function ignoreFailures()
     {
         $this->stopOnFail = false;
@@ -32,6 +37,8 @@ class Stack extends BaseTask
      */
     public function run()
     {
+        Preconditions::assert($this->tasks != null && count($this->tasks) > 0);
+
         $results = array();
 
         /**

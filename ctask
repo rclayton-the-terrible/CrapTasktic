@@ -12,6 +12,13 @@ if (file_exists(__DIR__.'/vendor/autoload.php')) {
 }
 
 $runner = new \CTask\Runner();
-$runner->run();
+
+$class = getenv('CTASK_CLASS');
+if (!$class) $class = 'Commands';
+
+$file = getenv('CTASK_FILE');
+if (!$file) $file = 'Commands.php';
+
+$runner->run(array('class' => $class, 'file' => $file));
 
 ?>

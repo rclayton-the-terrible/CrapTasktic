@@ -13,10 +13,12 @@ class Watch extends BaseTask
     protected $closure;
     protected $monitor = array();
     protected $bindTo;
+
     public function __construct($bindTo)
     {
         $this->bindTo = $bindTo;
     }
+
     public function monitor($paths, Closure $callable)
     {
         if (!is_array($paths)) {
@@ -25,6 +27,7 @@ class Watch extends BaseTask
         $this->monitor[] = array($paths, $callable);
         return $this;
     }
+
     public function run()
     {
         $watcher = new ResourceWatcher();
