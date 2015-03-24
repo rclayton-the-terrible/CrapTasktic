@@ -18,12 +18,12 @@ class BaseCommands
     /**
      * @var Communicator
      */
-    private $communicator;
+    protected $communicator;
 
     /**
      * @var Configuration
      */
-    private $configuration;
+    protected $configuration;
 
     /**
      * @var Tasks
