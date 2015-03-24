@@ -31,7 +31,7 @@ class Preconditions
 
     public static function assertNotNull($argument, $message = 'Argument must not be null.')
     {
-        if ($argument == null)  throw new IllegalStateException($message);
+        if ($argument === null)  throw new IllegalStateException($message);
     }
 }
 
