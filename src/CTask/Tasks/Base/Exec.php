@@ -150,7 +150,10 @@ class Exec extends ExecTask
             $this->startTimer();
             $this->process->run();
             $this->stopTimer();
-            return new Result($this, $this->process->getExitCode(), $this->process->getOutput(), array('time' => $this->getExecutionTime()));
+            return new Result(
+                $this->process->getExitCode(),
+                array('output' => $this->process->getOutput(), 'time' => $this->getExecutionTime()),
+                null);
         }
         if (!$this->background and $this->isPrinted) {
             $this->startTimer();
@@ -160,12 +163,15 @@ class Exec extends ExecTask
                 }
             );
             $this->stopTimer();
-            return new Result($this, $this->process->getExitCode(), $this->process->getOutput(), array('time' => $this->getExecutionTime()));
+            return new Result(
+                $this->process->getExitCode(),
+                array('output' => $this->process->getOutput(), 'time' => $this->getExecutionTime()),
+                null);
         }
         try {
             $this->process->start();
         } catch (\Exception $e) {
-            return Result::error($this, $e->getMessage());
+            return Result::error($this, $e);
         }
         return Result::success($this);
     }

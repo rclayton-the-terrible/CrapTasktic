@@ -34,12 +34,18 @@ class MakeDir extends BaseTask
      */
     public function run()
     {
-        if (is_dir($this->directory) && !$this->ignore)
-        {
-            return Result::error('Directory already exists.');
-        }
+        $result = null;
 
-        $result = mkdir($this->directory, $this->mode, $this->recursive);
+        if (file_exists($this->directory))
+        {
+            if (!$this->ignore) return Result::error('Directory already exists.');
+
+            $result = true;
+        }
+        else
+        {
+            $result = mkdir($this->directory, $this->mode, $this->recursive);
+        }
 
         if (!$result) return Result::error('Failed to create directory.');
 

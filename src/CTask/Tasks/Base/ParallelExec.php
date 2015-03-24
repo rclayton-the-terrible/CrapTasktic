@@ -16,6 +16,12 @@ class ParallelExec extends ExecTask
     protected $timeout = null;
     protected $idleTimeout = null;
 
+    public function process($command)
+    {
+        $this->processes[] = new Process($command);
+        return $this;
+    }
+
     public function run()
     {
         foreach ($this->processes as $process) {
