@@ -51,7 +51,7 @@ class CreateTarball extends Exec
     {
         return trim(
             $this->gzipPreamble .
-            ' tar -cf' . $this->method .
+            ' tar -c' . $this->method . 'f' .
             $this->arguments .
             ' ' . $this->archivePath .
             ' ' . implode(' ', $this->files) .
