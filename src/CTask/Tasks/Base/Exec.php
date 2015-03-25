@@ -17,6 +17,7 @@ class Exec extends ExecTask
     protected $idleTimeout = null;
     protected $env = null;
     protected $arguments = '';
+    protected $redirectOutput = '';
 
     /**
      * @var Process
@@ -30,7 +31,7 @@ class Exec extends ExecTask
 
     public function getCommand()
     {
-        return trim($this->command . $this->arguments);
+        return trim($this->command . $this->arguments . $this->redirectOutput);
     }
 
     /**
@@ -43,6 +44,7 @@ class Exec extends ExecTask
     {
         return $this->args($arg);
     }
+
     /**
      * Pass methods parameters as arguments to executable
      *
@@ -57,6 +59,20 @@ class Exec extends ExecTask
         $this->arguments .= " ".implode(' ', $args);
         return $this;
     }
+
+    /**
+     * Redirect the output to /dev/null
+     */
+    public function andBeQuiet()
+    {
+        $this->redirectOutput = ' > /dev/null 2>&1';
+    }
+
+    public function redirectToFile($filename, $overwrite = false)
+    {
+        $this->redirectOutput = ' ' . (($overwrite)? '>>' : '>') . " $filename";
+    }
+
     /**
      * Pass option to executable. Options are prefixed with `--` , value can be provided in second parameter
      *
