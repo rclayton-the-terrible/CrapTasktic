@@ -66,11 +66,13 @@ class Exec extends ExecTask
     public function andBeQuiet()
     {
         $this->redirectOutput = ' > /dev/null 2>&1';
+        return $this;
     }
 
     public function redirectToFile($filename, $overwrite = false)
     {
         $this->redirectOutput = ' ' . (($overwrite)? '>>' : '>') . " $filename";
+        return $this;
     }
 
     /**

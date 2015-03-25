@@ -36,6 +36,12 @@ class CreateTarball extends Exec
         return $this;
     }
 
+    public function filesAndDirs(array $files)
+    {
+        $this->files = array_merge($this->files, $files);
+        return $this;
+    }
+
     public function directory($dir)
     {
         return $this->file($dir);
