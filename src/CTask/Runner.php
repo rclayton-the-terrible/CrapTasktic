@@ -181,6 +181,7 @@ class Runner
         foreach($class->getMethods(ReflectionMethod::IS_PUBLIC) as $method)
         {
             if (!$method->isConstructor()
+                && !$method->isStatic()
                 && !in_array($method->getName(), self::$INVALID_METHOD_NAMES)
                 && strpos($method->getName(), '__') !== 0)
                 $commands[] = $method->getName();
