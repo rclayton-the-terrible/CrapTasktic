@@ -7,6 +7,7 @@ use CTask\Communicator;
 use CTask\Configuration;
 use CTask\Preconditions;
 use CTask\Task;
+use CTask\Tasks\Archive\CreateTarball;
 use CTask\Tasks\Base\Exec;
 use CTask\Tasks\Base\ParallelExec;
 use CTask\Tasks\Base\Stack;
@@ -57,6 +58,7 @@ class Tasks
         'deleteDir' => 'CTask\Tasks\FileSystem\DeleteDir',
         'makeDir' => 'CTask\Tasks\FileSystem\MakeDir',
         'mirrorDir' => 'CTask\Tasks\FileSystem\MirrorDir',
+        'createTarball' => 'CTask\Tasks\Archive\CreateTarball',
     );
 
     /**
@@ -217,6 +219,16 @@ class Tasks
     public function mirrorDir($dirs)
     {
         return $this->createInstance('mirrorDir', array($dirs));
+    }
+
+    /**
+     * Create a Tarball.
+     * @param $archivePath string Destination path of the tarball
+     * @return CreateTarball
+     */
+    public function createTarball($archivePath)
+    {
+        return $this->createInstance('createTarball', array($archivePath));
     }
 
     /**
