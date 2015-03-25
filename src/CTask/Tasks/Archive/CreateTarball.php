@@ -54,6 +54,7 @@ class CreateTarball extends Exec
             ' tar -cf' . $this->method .
             $this->arguments .
             ' ' . $this->archivePath .
-            ' ' . implode(' ', $this->files));
+            ' ' . implode(' ', $this->files) .
+            $this->redirectOutput);
     }
 }
